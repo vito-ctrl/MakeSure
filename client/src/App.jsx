@@ -8,8 +8,6 @@ import Login from "./pages/auth/Login";
 import Admin from "./pages/Admin";  
 import User from "./pages/User";
 
-import "./pages/auth/styling.css";
-
 export default function App() {
   return (
     <Router>

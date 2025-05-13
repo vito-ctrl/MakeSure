@@ -5,17 +5,22 @@ const authSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    email:{
+    email: {
         type: String,
+        unique: true,
+        required: true
+    },
+    phone: {
+        type: Number,
         unique: true,
         require: true
     },
     password:{
         type: String,
-        require: true
+        required: true
     },
     
 });
 
-const user = mongoose.model('register', authSchema);
+const user = mongoose.model('sure', authSchema);
 module.exports = user

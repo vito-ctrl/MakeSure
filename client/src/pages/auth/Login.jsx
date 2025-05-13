@@ -1,79 +1,85 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import * as Components from "./Components";
-import "./styling.css";
+import { useForm } from "react-hook-form";
+import { BiUser } from "react-icons/bi";
+import { AiOutlineLock } from "react-icons/ai";
+import { useNavigate, Link } from "react-router-dom";
 
-export default function Login() {
-  const [login, setLogin] = useState({});
+const LoginPage = () => {
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
-  // Set signingIn to true for Login page
-  const signingIn = true;
 
-  const handleChange = (e) => {
-    setLogin({
-      ...login,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      console.log('start posting');
-      const res = await fetch('/api/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(login),
-      });
+  // Fonction de soumission du formulaire
+  const onSubmit = async (data) => {
+    // console.log(data)
+    try{
+       const res = await fetch('/api/auth/signin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data),
+        });
+      const result = await res.json();
       if(res.ok){
-        navigate('/admin')
-      }
-      const data = await res.json();
-      console.log(data);
-      if (!res.ok) {
-        console.error('request error');
+        console.log("data", result);
+      } else {
+        console.error('there somthing wrong in data posting')
       }
     } catch (error) {
-      console.log(error);
+      console.error(error)
     }
   };
 
   return (
-    <Components.Container>
-      <Components.SignUpContainer signingIn={signingIn} />
-      <Components.SignInContainer signingIn={signingIn}>
-        <Components.Form onSubmit={handleSubmit}>
-          <Components.Title>Sign in</Components.Title>
-          <Components.Input onChange={handleChange} name="email" type="email" placeholder="Email" />
-          <Components.Input onChange={handleChange} name="password" type="password" placeholder="Password" />
-          {/* <Components.Anchor href="#">Forgot your password?</Components.Anchor> */}
-          <Components.Button className="mt-2">Sign In</Components.Button>
-        </Components.Form>
-      </Components.SignInContainer>
-      <Components.OverlayContainer signingIn={signingIn}>
-        <Components.Overlay signingIn={signingIn}>
-          <Components.LeftOverlayPanel signingIn={signingIn}>
-            <Components.Title>Welcome Back!</Components.Title>
-            <Components.Paragraph>
-              To keep connected with us please login with your personal info
-            </Components.Paragraph>
-            <Components.GhostButton onClick={() => navigate("/register")}>
-              Sign Up
-            </Components.GhostButton>
-          </Components.LeftOverlayPanel>
-          <Components.RightOverlayPanel signingIn={signingIn}>
-            <Components.Title>Hello, Friend!</Components.Title>
-            <Components.Paragraph>
-              Enter your personal details and start journey with us
-            </Components.Paragraph>
-            <Components.GhostButton onClick={() => navigate("/register")}>
-              Sign Up
-            </Components.GhostButton>
-          </Components.RightOverlayPanel>
-        </Components.Overlay>
-      </Components.OverlayContainer>
-    </Components.Container>
+    <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="bg-gray-900 border border-green-600 rounded-md p-8 shadow-lg backdrop-filter backdrop-blur-sm bg-opacity-30 relative">
+        <h1 className="text-4xl text-white font-bold text-center mb-6">Login</h1>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Email Field */}
+          <div className="relative my-4">
+            <input
+              type="email"
+              id="login-email"
+              {...register("email", { required: "Email requis" })}
+              className="block w-72 py-2 px-0 text-sm text-white bg-transparent border-0 border-b-2 border-gray-500 focus:outline-none focus:ring-0 focus:border-green-500 peer"
+              placeholder=" "
+            />
+            <label htmlFor="login-email" className="absolute text-sm text-white transition-all duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+              Your Email
+            </label>
+            <BiUser className="absolute top-4 right-4 text-white" />
+            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+          </div>
+
+          {/* Password Field */}
+          <div className="relative my-4">
+            <input
+              type="password"
+              id="login-password"
+              {...register("password", { required: "Mot de passe requis" })}
+              className="block w-72 py-2 px-0 text-sm text-white bg-transparent border-0 border-b-2 border-gray-500 focus:outline-none focus:ring-0 focus:border-green-500 peer"
+              placeholder=" "
+            />
+            <label htmlFor="login-password" className="absolute text-sm text-white transition-all duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+              Your Password
+            </label>
+            <AiOutlineLock className="absolute top-4 right-4 text-white" />
+            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+          </div>
+
+          {/* Submit Button */}
+          <button className="w-full mt-6 mb-4 rounded-full bg-green-600 text-white hover:bg-green-700 py-2 transition-colors duration-300" type="submit">
+            Login
+          </button>
+
+          {/* Link to Register Page */}
+          <div className="text-center">
+            <span className="text-white text-sm">New here? <Link className="text-green-500" to="/register">Create an Account</Link></span>
+          </div>
+        </form>
+      </div>
+    </div>
   );
-}
+};
+
+export default LoginPage;

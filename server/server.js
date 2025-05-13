@@ -9,7 +9,7 @@ app.use(cors());
 
 app.use('/api/auth', authRouter);
 
-mongoose.connect('mongodb://127.0.0.1:27017/securisee')
+mongoose.connect('mongodb://127.0.0.1:27017/makeSure')
 .then(() => console.log('connected to mongodb'))
 .catch((error) => console.error('failed to connect to mongodb', error))
 
