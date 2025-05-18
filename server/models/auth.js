@@ -13,13 +13,17 @@ const authSchema = new mongoose.Schema({
     phone: {
         type: Number,
         unique: true,
-        require: true
+        required: true
     },
-    password:{
+    password: {
         type: String,
         required: true
     },
-    
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    }
 });
 
 const user = mongoose.model('sure', authSchema);
